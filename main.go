@@ -1,134 +1,148 @@
 package main
 
 import (
-	"errors"
 	"flag"
 	"fmt"
+	"log"
+	"net/http"
 	"os"
-	"time"
 
-	MQTT "github.com/eclipse/paho.mqtt.golang"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/sstallion/go-hid"
 )
 
 var (
-	temperature float32
-	co2         uint16
+	debug bool
+	port  string
 )
 
-func getData(dev *hid.Device) error {
-	buf := make([]byte, 8)
-
-	i, err := dev.Read(buf)
-	if err != nil {
-		return err
-	}
-
-	if i != len(buf) {
-		return errors.New("wrong read bug size")
-	}
-
-	decode(buf)
-	return nil
-}
-
-func decode(buf []byte) {
-	res := make([]byte, 8)
-
-	var c byte
-	for _, n := range [][]int{{0, 2}, {1, 4}, {3, 7}, {5, 6}} {
-		c = buf[n[0]]
-		buf[n[0]] = buf[n[1]]
-		buf[n[1]] = c
-	}
-
-	var tmp = buf[7] << 5
-	res[7] = (buf[6] << 5) | (buf[7] >> 3)
-	res[6] = (buf[5] << 5) | (buf[6] >> 3)
-	res[5] = (buf[4] << 5) | (buf[5] >> 3)
-	res[4] = (buf[3] << 5) | (buf[4] >> 3)
-	res[3] = (buf[2] << 5) | (buf[3] >> 3)
-	res[2] = (buf[1] << 5) | (buf[2] >> 3)
-	res[1] = (buf[0] << 5) | (buf[1] >> 3)
-	res[0] = tmp | (buf[0] >> 3)
-
-	var magicWord = []byte("Htemp99e")
-
-	for i := 0; i < 8; i++ {
-		res[i] -= (magicWord[i] << 4) | (magicWord[i] >> 4)
-	}
-
-	if res[3] != res[0]+res[1]+res[2] {
-		return
-	}
-
-	var w uint16
-	w = uint16(res[1])*256 + uint16(res[2])
-
-	switch res[0] {
-	case 0x42:
-		temperature = float32(w)*0.0625 - 273.15
-	case 0x50:
-		co2 = w
-	}
-}
-
-func sendMqtt(server, topic, user, password string) error {
-	opts := MQTT.NewClientOptions()
-	opts.AddBroker(server)
-	opts.SetClientID("mqtt-go-sender")
-	opts.SetUsername(user)
-	opts.SetPassword(password)
-
-	client := MQTT.NewClient(opts)
-	if token := client.Connect(); token.Wait() && token.Error() != nil {
-		return token.Error()
-	}
-
-	token := client.Publish(topic+"/temperature", 0, false, fmt.Sprintf("%.2f", temperature))
-	token.Wait()
-	token = client.Publish(topic+"/co2", 0, false, fmt.Sprintf("%d", co2))
-	token.Wait()
-
-	client.Disconnect(250)
-	return nil
-}
+var (
+	co2 = promauto.NewGauge(prometheus.GaugeOpts{
+		Name: "co2",
+		Help: "Air CO2 counter",
+	})
+	temperature = promauto.NewGauge(prometheus.GaugeOpts{
+		Name: "temp",
+		Help: "Air Temperature in celsius degrees",
+	})
+)
 
 func main() {
-	server := flag.String("server", "", "The broker URI. ex: tcp://192.168.0.1:1883")
-	topic := flag.String("topic", "dadget/room", "Base topic to send to")
-	user := flag.String("user", "", "The User (optional)")
-	password := flag.String("password", "", "The password (optional)")
-
+	// command line arg
+	flag.StringVar(&port, "port", "2112", "Port number to start http server")
+	flag.BoolVar(&debug, "debug", false, "Enable debug output")
 	flag.Parse()
 
-	dev, err := hid.OpenFirst(0x04d9, 0xa052)
+	// start web server
+	http.Handle("/metrics", promhttp.Handler())
+	go func() {
+		err := http.ListenAndServe(":"+port, nil)
+		if err != nil {
+			log.Fatalf("could not start http server: %v", err)
+		}
+	}()
+
+	// init USB HID
+	if err := hid.Init(); err != nil {
+		log.Fatal(err)
+	}
+
+	// Open device
+	d, err := hid.OpenFirst(0x04d9, 0xa052)
 	if err != nil {
 		fmt.Printf("can't open device - %v\n", err)
 		os.Exit(1)
 	}
 
-	time.AfterFunc(time.Second*60, func() {
-		println("timeout...")
-		os.Exit(2)
-	})
-
-	magic := make([]byte, 8)
-	dev.SendFeatureReport(magic)
-
-	for temperature == 0 || co2 == 0 {
-		if err := getData(dev); err != nil {
-			fmt.Printf("error: %v\n", err)
-			os.Exit(1)
-		}
-		fmt.Print(".")
+	// Print USB HID debug info
+	if debug {
+		DeviceInfo(d)
 	}
 
-	fmt.Printf("\n\ntemp: %.2f\nco2: %d\n", temperature, co2)
+	magic := make([]byte, 8)
+	_, err = d.SendFeatureReport(magic)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	if *server != "" {
-		if err := sendMqtt(*server, *topic, *user, *password); err != nil {
-			fmt.Printf("error: %v\n", err)
-		}
+	// Loop to get values in prometheus counters
+	for {
+		getValues(d)
+	}
+}
+
+func DeviceInfo(d *hid.Device) {
+	// Read the Manufacturer String.
+	s, err := d.GetMfrStr()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Manufacturer String: %s\n", s)
+
+	// Read the Product String.
+	s, err = d.GetProductStr()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Product String: %s\n", s)
+
+	// Read the Serial Number String.
+	s, err = d.GetSerialNbr()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("Serial Number String: %s\n", s)
+}
+
+func getValues(dev *hid.Device) {
+	buf := make([]byte, 8)
+
+	i, err := dev.Read(buf)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if i != len(buf) {
+		log.Fatal("wrong read bug size")
+	}
+
+	decode(buf)
+}
+
+func decode(buf []byte) {
+	metric, value := buf[0], buf[1]
+	valueThousands, _ := buf[2], buf[3]
+
+	if buf[4] != 0x0d {
+		log.Println("Unexpected data from device")
+		return
+	}
+
+	metricName := ""
+	var valueShifted int32
+	valueShifted = int32(value) << 8
+	metricValue := valueShifted + int32(valueThousands)
+	var metricValueF float64
+	switch metric {
+	case 0x42:
+		metricName = "Temperature"
+		metricValueF = float64(metricValue)/16 - 273.15
+		temperature.Set(metricValueF)
+	case 0x50:
+		metricName = "CO2"
+		metricValueF = float64(metricValue)
+		co2.Set(metricValueF)
+	case 0x44:
+		metricName = "Humidity"
+		metricValueF = float64(metricValue)
+	default:
+		metricName = "Unknown"
+		return
+	}
+
+	if debug {
+		log.Printf("0x%X %s (%.1f)\n", metric, metricName, metricValueF)
 	}
 }
