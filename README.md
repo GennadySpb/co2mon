@@ -1,6 +1,10 @@
-# Software for CO2 Monitor
+# Software for CO2 Monitor 
 
-based on https://github.com/dmage/co2mon, more suitable for cron job to send data over MQTT
+Based on https://github.com/dmage/co2mon, go implementation https://github.com/kdudkov/co2mon,
+python script https://gist.github.com/librarian/306e06c51fe5f53ded6ebc761580b62b
+and article https://hackaday.io/project/5301-reverse-engineering-a-low-cost-usb-co-monitor
+
+This fork tested to work with KIT MT8057S.
 
 
 ## See also
