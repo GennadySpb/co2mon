@@ -6,11 +6,14 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	ycsdk "github.com/yandex-cloud/go-sdk"
 	"io"
 	"log"
 	"net/http"
 	"time"
+
+	dto "github.com/prometheus/client_model/go"
+	"github.com/prometheus/common/expfmt"
+	ycsdk "github.com/yandex-cloud/go-sdk"
 )
 
 var ServiceAccountKeyFile string
@@ -18,11 +21,16 @@ var Token string
 
 var folderID string
 
-func main() {
+var Source string
 
+const endpoint = "monitoring.api.cloud.yandex.net"
+const period = 15 * time.Second
+
+func main() {
 	flag.StringVar(&ServiceAccountKeyFile, "sa-key-file", "", "Service account key file")
 	flag.StringVar(&Token, "token", "", "Yandex.Cloud token")
 	flag.StringVar(&folderID, "folder-id", "", "Yandex.Cloud folder ID")
+	flag.StringVar(&Source, "source", "localhost:2112", "co2mon prometheus exporter source")
 	flag.Parse()
 
 	// validate
@@ -51,22 +59,18 @@ func main() {
 	}
 
 	tokenMiddleware := ycsdk.NewIAMTokenMiddleware(sdk, time.Now)
-	iamToken, err := tokenMiddleware.GetIAMToken(ctx, false)
-	if err != nil {
-		log.Fatal(err)
-	}
-	sendMetrics(ctx, iamToken)
 
-	ticker := time.NewTicker(15 * time.Second)
+	ticker := time.NewTicker(period)
 	quit := make(chan struct{})
 	for {
 		select {
 		case <-ticker.C:
+			metrics := getMetrics()
 			iamToken, err := tokenMiddleware.GetIAMToken(ctx, false)
 			if err != nil {
 				log.Fatal(err)
 			}
-			sendMetrics(ctx, iamToken)
+			sendMetrics(ctx, iamToken, metrics)
 		case <-quit:
 			ticker.Stop()
 			return
@@ -74,21 +78,28 @@ func main() {
 	}
 }
 
-var endpoint = "monitoring.api.cloud.yandex.net"
+func getMetrics() map[string]*dto.MetricFamily {
+	resp, err := http.Get("http://" + Source + "/metrics")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	var parser expfmt.TextParser
+	mf, err := parser.TextToMetricFamilies(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return mf
+}
 
 // sendMetrics sends metrics to Yandex.Cloud Monitoring with forming http query params and marshaling
 // metrics to json
 
 //'https://monitoring.api.cloud.yandex.net/monitoring/v2/data/write?folderId=aoe6vrq0g3svvs3uf62u&service=custom' > output.json
 
-func sendMetrics(ctx context.Context, iamToken string) {
-	data := MonitoringStruct{}
-	data1 := Metric{
-		Name:   "Temp",
-		Labels: map[string]string{},
-		Value:  10,
-	}
-	data.Metrics = append(data.Metrics, data1)
+func sendMetrics(ctx context.Context, iamToken string, metrics map[string]*dto.MetricFamily) {
+	// create data
+	data := prepareMetrics(metrics)
 
 	// marshal data to json
 	buf, err := json.Marshal(data)
@@ -123,6 +134,22 @@ func sendMetrics(ctx context.Context, iamToken string) {
 		log.Printf("response Status: %s", response.Status)
 		log.Printf("response Body: %s", body)
 	}
-	//log.Printf("response Status: %s", response.Status)
-	//log.Printf("response Body: %s", body)
+}
+
+func prepareMetrics(metrics map[string]*dto.MetricFamily) MonitoringStruct {
+	result := MonitoringStruct{}
+	for _, m := range metrics {
+		for _, metric := range m.Metric {
+			data1 := Metric{
+				Name:   m.GetName(),
+				Labels: map[string]string{},
+				Value:  metric.GetGauge().GetValue(),
+			}
+			for _, label := range metric.Label {
+				data1.Labels[label.GetName()] = label.GetValue()
+			}
+			result.Metrics = append(result.Metrics, data1)
+		}
+	}
+	return result
 }
