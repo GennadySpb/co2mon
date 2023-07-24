@@ -1,18 +1,31 @@
 before:
   hooks:
-    # You may remove this if you don't use go modules.
     - go mod tidy
+#     install dev packages with `libudev.h` and other staff
+    - ./scripts/install-build-deps.sh
 builds:
-  - env:
-      - CGO_ENABLED=1
-    tags:
-      - libusb
+  - id: darwin-amd64
+    main: ./
     targets:
-      - linux_amd64
       - darwin_arm64
+      - linux_amd64
       - linux_arm_5
       - linux_arm_6
       - linux_arm_7
+    env:
+      - CGO_ENABLED=1
+      - CC_darwin_arm64=oa64-clang
+      - CXX_darwin_arm64=oa64-clang++
+      - CC_linux_arm=arm-linux-gnueabihf-gcc
+      - CXX_linux_arm=arm-linux-gnueabihf-g++
+      - CC_linux_amd64=x86_64-linux-gnu-gcc
+      - CXX_linux_amd64=x86_64-linux-gnu-g++
+      - 'CC={{ index .Env (print "CC_" .Os "_" .Arch) }}'
+      - 'CXX={{ index .Env (print "CCX_" .Os "_" .Arch) }}'
+    ldflags:
+      - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser'
+#    tags:
+#      - libusb
 archives:
   - format: tar.gz
     # this name template makes the OS and Arch compatible with the results of uname.
@@ -24,9 +37,6 @@ archives:
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
     # use zip for windows archives
-    format_overrides:
-    - goos: windows
-      format: zip
 checksum:
   name_template: 'checksums.txt'
 snapshot:
