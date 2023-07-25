@@ -9,6 +9,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"os"
+	"path"
 	"time"
 
 	dto "github.com/prometheus/client_model/go"
@@ -16,12 +18,19 @@ import (
 	ycsdk "github.com/yandex-cloud/go-sdk"
 )
 
-var ServiceAccountKeyFile string
-var Token string
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
+)
 
-var folderID string
-
-var Source string
+var (
+	ServiceAccountKeyFile string
+	Token                 string
+	folderID              string
+	Source                string
+	showVersion           bool
+)
 
 const endpoint = "monitoring.api.cloud.yandex.net"
 const period = 15 * time.Second
@@ -31,7 +40,14 @@ func main() {
 	flag.StringVar(&Token, "token", "", "Yandex.Cloud token")
 	flag.StringVar(&folderID, "folder-id", "", "Yandex.Cloud folder ID")
 	flag.StringVar(&Source, "source", "localhost:2112", "co2mon prometheus exporter source")
+	flag.BoolVar(&showVersion, "version", false, "Show version")
 	flag.Parse()
+
+	// show version and exit
+	if showVersion {
+		fmt.Printf("%s verion %s, commit %s, built at %s", path.Base(os.Args[0]), version, commit, date)
+		os.Exit(0)
+	}
 
 	// validate
 	if folderID == "" {
