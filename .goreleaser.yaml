@@ -1,0 +1,53 @@
+before:
+  hooks:
+    - go mod tidy
+#     install dev packages with `libudev.h` and other staff
+    - ./scripts/install-build-deps.sh
+builds:
+  - id: co2mon
+    main: ./
+    targets:
+      - darwin_arm64
+      - linux_arm64
+      - linux_amd64
+      - linux_arm_5
+#      - linux_arm_6
+#      - linux_arm_7
+    env:
+      - CGO_ENABLED=1
+      - CC_darwin_arm64=oa64-clang
+      - CXX_darwin_arm64=oa64-clang++
+      - CC_linux_amd64=x86_64-linux-gnu-gcc
+      - CXX_linux_amd64=x86_64-linux-gnu-g++
+      - CC_linux_arm=arm-linux-gnueabihf-gcc
+      - CXX_linux_arm=arm-linux-gnueabihf-g++
+      - CC_linux_arm64=aarch64-linux-gnu-gcc
+      - CXX_linux_arm64=aarch64-linux-gnu-g++
+      - 'CC={{ index .Env (print "CC_" .Os "_" .Arch) }}'
+      - 'CXX={{ index .Env (print "CCX_" .Os "_" .Arch) }}'
+    ldflags:
+      - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser'
+#    tags:
+#      - libusb
+#archives:
+#  - format: tar.gz
+#    # this name template makes the OS and Arch compatible with the results of uname.
+#    name_template: >-
+#      {{ .ProjectName }}_
+#      {{- title .Os }}_
+#      {{- if eq .Arch "amd64" }}x86_64
+#      {{- else if eq .Arch "386" }}i386
+#      {{- else }}{{ .Arch }}{{ end }}
+#      {{- if .Arm }}v{{ .Arm }}{{ end }}
+#    # use zip for windows archives
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
+release:
+  github:
+    owner: GennadySpb
+    name: co2mon
+  prerelease: auto
+  draft: true
