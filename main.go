@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
@@ -14,8 +15,15 @@ import (
 )
 
 var (
-	debug bool
-	port  string
+	debug       bool
+	showVersion bool
+	port        string
+)
+
+var (
+	version = "dev"
+	commit  = "none"
+	date    = "unknown"
 )
 
 var (
@@ -33,7 +41,14 @@ func main() {
 	// command line arg
 	flag.StringVar(&port, "port", "2112", "Port number to start http server")
 	flag.BoolVar(&debug, "debug", false, "Enable debug output")
+	flag.BoolVar(&showVersion, "version", false, "Show version")
 	flag.Parse()
+
+	// show version and exit
+	if showVersion {
+		fmt.Printf("%s verion %s, commit %s, built at %s", path.Base(os.Args[0]), version, commit, date)
+		os.Exit(0)
+	}
 
 	// start web server
 	http.Handle("/metrics", promhttp.Handler())
