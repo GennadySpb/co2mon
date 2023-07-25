@@ -7,7 +7,7 @@ builds:
   - id: darwin-amd64
     main: ./
     targets:
-#      - darwin_arm64
+      - darwin_arm64
       - linux_arm64
       - linux_amd64
       - linux_arm_5
