@@ -44,3 +44,10 @@ checksum:
   name_template: 'checksums.txt'
 snapshot:
   name_template: "{{ incpatch .Version }}-next"
+
+release:
+  github:
+    owner: GennadySpb
+    name: co2mon
+  prerelease: auto
+  draft: true
