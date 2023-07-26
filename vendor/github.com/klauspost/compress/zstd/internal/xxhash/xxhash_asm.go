@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:vendor/github.com/klauspost/compress/zstd/internal/xxhash/xxhash_asm.go
 //go:build (amd64 || arm64) && !appengine && gc && !purego && !noasm
+========
+//go:build (amd64 || arm64) && !appengine && gc && !purego
+>>>>>>>> f62e69b (Update go modules and vendor dir):vendor/github.com/cespare/xxhash/v2/xxhash_asm.go
 // +build amd64 arm64
 // +build !appengine
 // +build gc
