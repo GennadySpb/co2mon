@@ -1,5 +1,5 @@
 PACKAGE_NAME          := github.com/GennadySpb/co2mon
-GOLANG_CROSS_VERSION  ?= v1.20.6
+GOLANG_CROSS_VERSION  ?= v1.21.1
 
 .PHONY: release-dry-run
 release-dry-run:
@@ -10,7 +10,7 @@ release-dry-run:
 		-v `pwd`:/go/src/$(PACKAGE_NAME) \
 		-w /go/src/$(PACKAGE_NAME) \
 		ghcr.io/goreleaser/goreleaser-cross:${GOLANG_CROSS_VERSION} \
-		--clean --skip-validate --skip-publish
+		--clean --skip-validate --skip-publish --snapshot --debug
 
 .PHONY: release
 release:
