@@ -3,6 +3,15 @@ before:
     - go mod tidy
 #     install dev packages with `libudev.h` and other staff
     - ./scripts/install-build-deps.sh
+
+report_sizes: true
+
+metadata:
+  mod_timestamp: "{{ .CommitTimestamp }}"
+
+sboms:
+  - artifacts: archive
+
 builds:
   - id: co2mon
     main: ./
@@ -27,6 +36,8 @@ builds:
       - 'CXX={{ index .Env (print "CCX_" .Os "_" .Arch) }}'
     ldflags:
       - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser'
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
   - id: ycpusher
     main: ./cmd/ycpusher
     targets:
@@ -50,10 +61,14 @@ builds:
       - 'CXX={{ index .Env (print "CCX_" .Os "_" .Arch) }}'
     ldflags:
       - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser'
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
 checksum:
   name_template: 'checksums.txt'
+
 snapshot:
   name_template: "{{ incpatch .Version }}-next"
+
 archives:
   - name_template: >-
       {{- .ProjectName }}_
@@ -71,6 +86,7 @@ archives:
 
 release:
   name_template: "v{{ .Version }}"
+  skip_upload: true
   github:
     owner: GennadySpb
     name: co2mon
