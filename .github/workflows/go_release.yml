@@ -10,14 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: 'true'
-
-      - run: git fetch --prune --unshallow
-
-      - name: set up golang
-        uses: actions/setup-go@v4
+          fetch-depth: 0
 
       - name: release dry run
         run: make release-dry-run
@@ -26,5 +22,5 @@ jobs:
         run: |-
           echo 'GITHUB_TOKEN=${{secrets.GORELEASER_ACCESS_TOKEN}}' > .release-env
 
-      - name: release publish
+      - name: make release and publish
         run: make release
