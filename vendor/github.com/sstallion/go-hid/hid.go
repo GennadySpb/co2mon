@@ -30,8 +30,11 @@ package hid
 
 /*
 #cgo darwin LDFLAGS: -framework IOKit -framework CoreFoundation -framework AppKit
+#cgo freebsd CFLAGS: -I/usr/local/include
 #cgo freebsd LDFLAGS: -L/usr/local/lib -lusb -liconv -pthread
 #cgo linux LDFLAGS: -ludev -lrt
+#cgo linux,libusb pkg-config: libusb-1.0
+#cgo linux,libusb LDFLAGS: -lpthread
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -373,6 +376,19 @@ func (d *Device) GetIndexedStr(index int) (string, error) {
 		return "", wrapErr(d.Error())
 	}
 	return wcstogo(wcs), nil
+}
+
+// GetReportDescriptor receives a report descriptor with len(p) bytes from the
+// Device. It returns the number of bytes read and an error, if any.
+func (d *Device) GetReportDescriptor(p []byte) (int, error) {
+	data := (*C.uchar)(&p[0])
+	length := C.size_t(len(p))
+
+	res := C.hid_get_report_descriptor(d.handle, data, length)
+	if res == -1 {
+		return int(res), wrapErr(d.Error())
+	}
+	return int(res), nil
 }
 
 // Error returns the last error that occurred on the Device. If no error
