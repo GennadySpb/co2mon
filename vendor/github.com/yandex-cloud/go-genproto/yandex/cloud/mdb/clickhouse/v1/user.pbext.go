@@ -554,6 +554,66 @@ func (m *UserSettings) SetMaxReadBufferSize(v *wrapperspb.Int64Value) {
 	m.MaxReadBufferSize = v
 }
 
+func (m *UserSettings) SetInsertKeeperMaxRetries(v *wrapperspb.Int64Value) {
+	m.InsertKeeperMaxRetries = v
+}
+
+func (m *UserSettings) SetMaxTemporaryDataOnDiskSizeForUser(v *wrapperspb.Int64Value) {
+	m.MaxTemporaryDataOnDiskSizeForUser = v
+}
+
+func (m *UserSettings) SetMaxTemporaryDataOnDiskSizeForQuery(v *wrapperspb.Int64Value) {
+	m.MaxTemporaryDataOnDiskSizeForQuery = v
+}
+
+func (m *UserSettings) SetMaxParserDepth(v *wrapperspb.Int64Value) {
+	m.MaxParserDepth = v
+}
+
+func (m *UserSettings) SetRemoteFilesystemReadMethod(v UserSettings_RemoteFilesystemReadMethod) {
+	m.RemoteFilesystemReadMethod = v
+}
+
+func (m *UserSettings) SetMemoryOvercommitRatioDenominator(v *wrapperspb.Int64Value) {
+	m.MemoryOvercommitRatioDenominator = v
+}
+
+func (m *UserSettings) SetMemoryOvercommitRatioDenominatorForUser(v *wrapperspb.Int64Value) {
+	m.MemoryOvercommitRatioDenominatorForUser = v
+}
+
+func (m *UserSettings) SetMemoryUsageOvercommitMaxWaitMicroseconds(v *wrapperspb.Int64Value) {
+	m.MemoryUsageOvercommitMaxWaitMicroseconds = v
+}
+
+func (m *UserSettings) SetLogQueryThreads(v *wrapperspb.BoolValue) {
+	m.LogQueryThreads = v
+}
+
+func (m *UserSettings) SetMaxInsertThreads(v *wrapperspb.Int64Value) {
+	m.MaxInsertThreads = v
+}
+
+func (m *UserSettings) SetUseHedgedRequests(v *wrapperspb.BoolValue) {
+	m.UseHedgedRequests = v
+}
+
+func (m *UserSettings) SetIdleConnectionTimeout(v *wrapperspb.Int64Value) {
+	m.IdleConnectionTimeout = v
+}
+
+func (m *UserSettings) SetHedgedConnectionTimeoutMs(v *wrapperspb.Int64Value) {
+	m.HedgedConnectionTimeoutMs = v
+}
+
+func (m *UserSettings) SetLoadBalancing(v UserSettings_LoadBalancing) {
+	m.LoadBalancing = v
+}
+
+func (m *UserSettings) SetPreferLocalhostReplica(v *wrapperspb.BoolValue) {
+	m.PreferLocalhostReplica = v
+}
+
 func (m *UserSettings) SetCompile(v *wrapperspb.BoolValue) {
 	m.Compile = v
 }

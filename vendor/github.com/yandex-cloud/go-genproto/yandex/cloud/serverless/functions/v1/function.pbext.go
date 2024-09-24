@@ -32,10 +32,6 @@ func (m *Function) SetLabels(v map[string]string) {
 	m.Labels = v
 }
 
-func (m *Function) SetLogGroupId(v string) {
-	m.LogGroupId = v
-}
-
 func (m *Function) SetHttpInvokeUrl(v string) {
 	m.HttpInvokeUrl = v
 }
@@ -92,10 +88,6 @@ func (m *Version) SetTags(v []string) {
 	m.Tags = v
 }
 
-func (m *Version) SetLogGroupId(v string) {
-	m.LogGroupId = v
-}
-
 func (m *Version) SetEnvironment(v map[string]string) {
 	m.Environment = v
 }
@@ -118,6 +110,22 @@ func (m *Version) SetLogOptions(v *LogOptions) {
 
 func (m *Version) SetStorageMounts(v []*StorageMount) {
 	m.StorageMounts = v
+}
+
+func (m *Version) SetAsyncInvocationConfig(v *AsyncInvocationConfig) {
+	m.AsyncInvocationConfig = v
+}
+
+func (m *Version) SetTmpfsSize(v int64) {
+	m.TmpfsSize = v
+}
+
+func (m *Version) SetConcurrency(v int64) {
+	m.Concurrency = v
+}
+
+func (m *Version) SetMounts(v []*Mount) {
+	m.Mounts = v
 }
 
 func (m *Resources) SetMemory(v int64) {
@@ -236,4 +244,88 @@ func (m *StorageMount) SetMountPointName(v string) {
 
 func (m *StorageMount) SetReadOnly(v bool) {
 	m.ReadOnly = v
+}
+
+type Mount_Target = isMount_Target
+
+func (m *Mount) SetTarget(v Mount_Target) {
+	m.Target = v
+}
+
+func (m *Mount) SetName(v string) {
+	m.Name = v
+}
+
+func (m *Mount) SetMode(v Mount_Mode) {
+	m.Mode = v
+}
+
+func (m *Mount) SetObjectStorage(v *Mount_ObjectStorage) {
+	m.Target = &Mount_ObjectStorage_{
+		ObjectStorage: v,
+	}
+}
+
+func (m *Mount) SetEphemeralDiskSpec(v *Mount_DiskSpec) {
+	m.Target = &Mount_EphemeralDiskSpec{
+		EphemeralDiskSpec: v,
+	}
+}
+
+func (m *Mount_ObjectStorage) SetBucketId(v string) {
+	m.BucketId = v
+}
+
+func (m *Mount_ObjectStorage) SetPrefix(v string) {
+	m.Prefix = v
+}
+
+func (m *Mount_DiskSpec) SetSize(v int64) {
+	m.Size = v
+}
+
+func (m *Mount_DiskSpec) SetBlockSize(v int64) {
+	m.BlockSize = v
+}
+
+func (m *AsyncInvocationConfig) SetRetriesCount(v int64) {
+	m.RetriesCount = v
+}
+
+func (m *AsyncInvocationConfig) SetSuccessTarget(v *AsyncInvocationConfig_ResponseTarget) {
+	m.SuccessTarget = v
+}
+
+func (m *AsyncInvocationConfig) SetFailureTarget(v *AsyncInvocationConfig_ResponseTarget) {
+	m.FailureTarget = v
+}
+
+func (m *AsyncInvocationConfig) SetServiceAccountId(v string) {
+	m.ServiceAccountId = v
+}
+
+type AsyncInvocationConfig_ResponseTarget_Target = isAsyncInvocationConfig_ResponseTarget_Target
+
+func (m *AsyncInvocationConfig_ResponseTarget) SetTarget(v AsyncInvocationConfig_ResponseTarget_Target) {
+	m.Target = v
+}
+
+func (m *AsyncInvocationConfig_ResponseTarget) SetEmptyTarget(v *EmptyTarget) {
+	m.Target = &AsyncInvocationConfig_ResponseTarget_EmptyTarget{
+		EmptyTarget: v,
+	}
+}
+
+func (m *AsyncInvocationConfig_ResponseTarget) SetYmqTarget(v *YMQTarget) {
+	m.Target = &AsyncInvocationConfig_ResponseTarget_YmqTarget{
+		YmqTarget: v,
+	}
+}
+
+func (m *YMQTarget) SetQueueArn(v string) {
+	m.QueueArn = v
+}
+
+func (m *YMQTarget) SetServiceAccountId(v string) {
+	m.ServiceAccountId = v
 }

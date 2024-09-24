@@ -87,6 +87,10 @@ func (m *InstanceGroup) SetApplicationLoadBalancerState(v *ApplicationLoadBalanc
 	m.ApplicationLoadBalancerState = v
 }
 
+func (m *InstanceGroup) SetAutoHealingPolicy(v *AutoHealingPolicy) {
+	m.AutoHealingPolicy = v
+}
+
 func (m *ApplicationLoadBalancerState) SetTargetGroupId(v string) {
 	m.TargetGroupId = v
 }
@@ -285,12 +289,20 @@ func (m *DeployPolicy) SetStrategy(v DeployPolicy_Strategy) {
 	m.Strategy = v
 }
 
+func (m *DeployPolicy) SetMinimalAction(v DeployPolicy_MinimalAction) {
+	m.MinimalAction = v
+}
+
 func (m *AllocationPolicy) SetZones(v []*AllocationPolicy_Zone) {
 	m.Zones = v
 }
 
 func (m *AllocationPolicy_Zone) SetZoneId(v string) {
 	m.ZoneId = v
+}
+
+func (m *AllocationPolicy_Zone) SetInstanceTagsPool(v []string) {
+	m.InstanceTagsPool = v
 }
 
 func (m *InstanceTemplate) SetDescription(v string) {
@@ -351,6 +363,10 @@ func (m *InstanceTemplate) SetPlacementPolicy(v *PlacementPolicy) {
 
 func (m *InstanceTemplate) SetFilesystemSpecs(v []*AttachedFilesystemSpec) {
 	m.FilesystemSpecs = v
+}
+
+func (m *InstanceTemplate) SetMetadataOptions(v *MetadataOptions) {
+	m.MetadataOptions = v
 }
 
 func (m *AttachedFilesystemSpec) SetMode(v AttachedFilesystemSpec_Mode) {
@@ -531,6 +547,10 @@ func (m *LoadBalancerSpec) SetMaxOpeningTrafficDuration(v *durationpb.Duration) 
 	m.MaxOpeningTrafficDuration = v
 }
 
+func (m *LoadBalancerSpec) SetIgnoreHealthChecks(v bool) {
+	m.IgnoreHealthChecks = v
+}
+
 func (m *TargetGroupSpec) SetName(v string) {
 	m.Name = v
 }
@@ -549,6 +569,10 @@ func (m *ApplicationLoadBalancerSpec) SetTargetGroupSpec(v *ApplicationTargetGro
 
 func (m *ApplicationLoadBalancerSpec) SetMaxOpeningTrafficDuration(v *durationpb.Duration) {
 	m.MaxOpeningTrafficDuration = v
+}
+
+func (m *ApplicationLoadBalancerSpec) SetIgnoreHealthChecks(v bool) {
+	m.IgnoreHealthChecks = v
 }
 
 func (m *ApplicationTargetGroupSpec) SetName(v string) {
@@ -653,6 +677,10 @@ func (m *ManagedInstance) SetStatusChangedAt(v *timestamppb.Timestamp) {
 	m.StatusChangedAt = v
 }
 
+func (m *ManagedInstance) SetInstanceTag(v string) {
+	m.InstanceTag = v
+}
+
 func (m *NetworkInterface) SetIndex(v string) {
 	m.Index = v
 }
@@ -719,4 +747,24 @@ func (m *LogRecord) SetTimestamp(v *timestamppb.Timestamp) {
 
 func (m *LogRecord) SetMessage(v string) {
 	m.Message = v
+}
+
+func (m *AutoHealingPolicy) SetAutoHealingAction(v AutoHealingPolicy_AutoHealingAction) {
+	m.AutoHealingAction = v
+}
+
+func (m *MetadataOptions) SetGceHttpEndpoint(v MetadataOption) {
+	m.GceHttpEndpoint = v
+}
+
+func (m *MetadataOptions) SetAwsV1HttpEndpoint(v MetadataOption) {
+	m.AwsV1HttpEndpoint = v
+}
+
+func (m *MetadataOptions) SetGceHttpToken(v MetadataOption) {
+	m.GceHttpToken = v
+}
+
+func (m *MetadataOptions) SetAwsV1HttpToken(v MetadataOption) {
+	m.AwsV1HttpToken = v
 }

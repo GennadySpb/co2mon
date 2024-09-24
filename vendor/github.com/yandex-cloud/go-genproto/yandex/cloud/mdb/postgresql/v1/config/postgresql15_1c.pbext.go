@@ -586,6 +586,14 @@ func (m *PostgresqlConfig15_1C) SetPlantunerFixEmptyTable(v *wrapperspb.BoolValu
 	m.PlantunerFixEmptyTable = v
 }
 
+func (m *PostgresqlConfig15_1C) SetMaxStackDepth(v *wrapperspb.Int64Value) {
+	m.MaxStackDepth = v
+}
+
+func (m *PostgresqlConfig15_1C) SetEnableGroupByReordering(v *wrapperspb.BoolValue) {
+	m.EnableGroupByReordering = v
+}
+
 func (m *PostgresqlConfig15_1C) SetGeqo(v *wrapperspb.BoolValue) {
 	m.Geqo = v
 }
@@ -640,6 +648,10 @@ func (m *PostgresqlConfig15_1C) SetLogReplicationCommands(v *wrapperspb.BoolValu
 
 func (m *PostgresqlConfig15_1C) SetLogAutovacuumMinDuration(v *wrapperspb.Int64Value) {
 	m.LogAutovacuumMinDuration = v
+}
+
+func (m *PostgresqlConfig15_1C) SetPasswordEncryption(v PostgresqlConfig15_1C_PasswordEncryption) {
+	m.PasswordEncryption = v
 }
 
 func (m *PostgresqlConfigSet15_1C) SetEffectiveConfig(v *PostgresqlConfig15_1C) {

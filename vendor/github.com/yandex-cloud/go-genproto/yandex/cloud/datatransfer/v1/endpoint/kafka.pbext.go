@@ -24,12 +24,12 @@ func (m *OnPremiseKafka) SetBrokerUrls(v []string) {
 	m.BrokerUrls = v
 }
 
-func (m *OnPremiseKafka) SetTlsMode(v *TLSMode) {
-	m.TlsMode = v
-}
-
 func (m *OnPremiseKafka) SetSubnetId(v string) {
 	m.SubnetId = v
+}
+
+func (m *OnPremiseKafka) SetTlsMode(v *TLSMode) {
+	m.TlsMode = v
 }
 
 type KafkaAuth_Security = isKafkaAuth_Security
@@ -54,12 +54,12 @@ func (m *KafkaSaslSecurity) SetUser(v string) {
 	m.User = v
 }
 
-func (m *KafkaSaslSecurity) SetPassword(v *Secret) {
-	m.Password = v
-}
-
 func (m *KafkaSaslSecurity) SetMechanism(v KafkaMechanism) {
 	m.Mechanism = v
+}
+
+func (m *KafkaSaslSecurity) SetPassword(v *Secret) {
+	m.Password = v
 }
 
 func (m *KafkaSource) SetConnection(v *KafkaConnectionOptions) {
@@ -84,6 +84,10 @@ func (m *KafkaSource) SetTransformer(v *DataTransformationOptions) {
 
 func (m *KafkaSource) SetParser(v *Parser) {
 	m.Parser = v
+}
+
+func (m *KafkaSource) SetTopicNames(v []string) {
+	m.TopicNames = v
 }
 
 func (m *KafkaTarget) SetConnection(v *KafkaConnectionOptions) {

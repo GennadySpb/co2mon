@@ -11,6 +11,14 @@ import (
 	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 )
 
+func (m *EnableShardingClusterMetadata) SetClusterId(v string) {
+	m.ClusterId = v
+}
+
+func (m *EnableShardingClusterRequest) SetClusterId(v string) {
+	m.ClusterId = v
+}
+
 func (m *GetClusterRequest) SetClusterId(v string) {
 	m.ClusterId = v
 }
@@ -95,6 +103,10 @@ func (m *CreateClusterRequest) SetAnnounceHostnames(v bool) {
 	m.AnnounceHostnames = v
 }
 
+func (m *CreateClusterRequest) SetMaintenanceWindow(v *MaintenanceWindow) {
+	m.MaintenanceWindow = v
+}
+
 func (m *CreateClusterMetadata) SetClusterId(v string) {
 	m.ClusterId = v
 }
@@ -137,6 +149,10 @@ func (m *UpdateClusterRequest) SetDeletionProtection(v bool) {
 
 func (m *UpdateClusterRequest) SetPersistenceMode(v Cluster_PersistenceMode) {
 	m.PersistenceMode = v
+}
+
+func (m *UpdateClusterRequest) SetNetworkId(v string) {
+	m.NetworkId = v
 }
 
 func (m *UpdateClusterRequest) SetAnnounceHostnames(v bool) {
@@ -269,6 +285,10 @@ func (m *RestoreClusterRequest) SetDeletionProtection(v bool) {
 
 func (m *RestoreClusterRequest) SetAnnounceHostnames(v bool) {
 	m.AnnounceHostnames = v
+}
+
+func (m *RestoreClusterRequest) SetMaintenanceWindow(v *MaintenanceWindow) {
+	m.MaintenanceWindow = v
 }
 
 func (m *RestoreClusterMetadata) SetClusterId(v string) {
@@ -643,4 +663,8 @@ func (m *ConfigSpec) SetAccess(v *Access) {
 
 func (m *ConfigSpec) SetRedis(v *config.RedisConfig) {
 	m.Redis = v
+}
+
+func (m *ConfigSpec) SetDiskSizeAutoscaling(v *DiskSizeAutoscaling) {
+	m.DiskSizeAutoscaling = v
 }

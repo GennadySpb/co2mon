@@ -3,6 +3,7 @@
 package opensearch
 
 import (
+	config "github.com/yandex-cloud/go-genproto/yandex/cloud/mdb/opensearch/v1/config"
 	operation "github.com/yandex-cloud/go-genproto/yandex/cloud/operation"
 	fieldmaskpb "google.golang.org/protobuf/types/known/fieldmaskpb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -122,6 +123,10 @@ func (m *UpdateClusterRequest) SetDeletionProtection(v bool) {
 
 func (m *UpdateClusterRequest) SetMaintenanceWindow(v *MaintenanceWindow) {
 	m.MaintenanceWindow = v
+}
+
+func (m *UpdateClusterRequest) SetNetworkId(v string) {
+	m.NetworkId = v
 }
 
 func (m *UpdateClusterMetadata) SetClusterId(v string) {
@@ -320,12 +325,36 @@ func (m *ConfigCreateSpec) SetAccess(v *Access) {
 	m.Access = v
 }
 
+func (m *KeystoreSetting) SetName(v string) {
+	m.Name = v
+}
+
+func (m *KeystoreSetting) SetValue(v string) {
+	m.Value = v
+}
+
+type OpenSearchCreateSpec_Config = isOpenSearchCreateSpec_Config
+
+func (m *OpenSearchCreateSpec) SetConfig(v OpenSearchCreateSpec_Config) {
+	m.Config = v
+}
+
 func (m *OpenSearchCreateSpec) SetPlugins(v []string) {
 	m.Plugins = v
 }
 
 func (m *OpenSearchCreateSpec) SetNodeGroups(v []*OpenSearchCreateSpec_NodeGroup) {
 	m.NodeGroups = v
+}
+
+func (m *OpenSearchCreateSpec) SetOpensearchConfig_2(v *config.OpenSearchConfig2) {
+	m.Config = &OpenSearchCreateSpec_OpensearchConfig_2{
+		OpensearchConfig_2: v,
+	}
+}
+
+func (m *OpenSearchCreateSpec) SetKeystoreSettings(v []*KeystoreSetting) {
+	m.KeystoreSettings = v
 }
 
 func (m *OpenSearchCreateSpec_NodeGroup) SetName(v string) {
@@ -356,6 +385,10 @@ func (m *OpenSearchCreateSpec_NodeGroup) SetRoles(v []OpenSearch_GroupRole) {
 	m.Roles = v
 }
 
+func (m *OpenSearchCreateSpec_NodeGroup) SetDiskSizeAutoscaling(v *DiskSizeAutoscaling) {
+	m.DiskSizeAutoscaling = v
+}
+
 func (m *DashboardsCreateSpec) SetNodeGroups(v []*DashboardsCreateSpec_NodeGroup) {
 	m.NodeGroups = v
 }
@@ -384,6 +417,10 @@ func (m *DashboardsCreateSpec_NodeGroup) SetAssignPublicIp(v bool) {
 	m.AssignPublicIp = v
 }
 
+func (m *DashboardsCreateSpec_NodeGroup) SetDiskSizeAutoscaling(v *DiskSizeAutoscaling) {
+	m.DiskSizeAutoscaling = v
+}
+
 func (m *ConfigUpdateSpec) SetVersion(v string) {
 	m.Version = v
 }
@@ -404,8 +441,28 @@ func (m *ConfigUpdateSpec) SetAccess(v *Access) {
 	m.Access = v
 }
 
+type OpenSearchClusterUpdateSpec_Config = isOpenSearchClusterUpdateSpec_Config
+
+func (m *OpenSearchClusterUpdateSpec) SetConfig(v OpenSearchClusterUpdateSpec_Config) {
+	m.Config = v
+}
+
 func (m *OpenSearchClusterUpdateSpec) SetPlugins(v []string) {
 	m.Plugins = v
+}
+
+func (m *OpenSearchClusterUpdateSpec) SetOpensearchConfig_2(v *config.OpenSearchConfig2) {
+	m.Config = &OpenSearchClusterUpdateSpec_OpensearchConfig_2{
+		OpensearchConfig_2: v,
+	}
+}
+
+func (m *OpenSearchClusterUpdateSpec) SetSetKeystoreSettings(v []*KeystoreSetting) {
+	m.SetKeystoreSettings = v
+}
+
+func (m *OpenSearchClusterUpdateSpec) SetRemoveKeystoreSettings(v []string) {
+	m.RemoveKeystoreSettings = v
 }
 
 func (m *BackupClusterRequest) SetClusterId(v string) {
@@ -548,6 +605,22 @@ func (m *OpenSearchNodeGroupUpdateSpec) SetRoles(v []OpenSearch_GroupRole) {
 	m.Roles = v
 }
 
+func (m *OpenSearchNodeGroupUpdateSpec) SetZoneIds(v []string) {
+	m.ZoneIds = v
+}
+
+func (m *OpenSearchNodeGroupUpdateSpec) SetSubnetIds(v []string) {
+	m.SubnetIds = v
+}
+
+func (m *OpenSearchNodeGroupUpdateSpec) SetAssignPublicIp(v bool) {
+	m.AssignPublicIp = v
+}
+
+func (m *OpenSearchNodeGroupUpdateSpec) SetDiskSizeAutoscaling(v *DiskSizeAutoscaling) {
+	m.DiskSizeAutoscaling = v
+}
+
 func (m *AddOpenSearchNodeGroupRequest) SetClusterId(v string) {
 	m.ClusterId = v
 }
@@ -586,6 +659,22 @@ func (m *DashboardsNodeGroupUpdateSpec) SetResources(v *Resources) {
 
 func (m *DashboardsNodeGroupUpdateSpec) SetHostsCount(v int64) {
 	m.HostsCount = v
+}
+
+func (m *DashboardsNodeGroupUpdateSpec) SetZoneIds(v []string) {
+	m.ZoneIds = v
+}
+
+func (m *DashboardsNodeGroupUpdateSpec) SetSubnetIds(v []string) {
+	m.SubnetIds = v
+}
+
+func (m *DashboardsNodeGroupUpdateSpec) SetAssignPublicIp(v bool) {
+	m.AssignPublicIp = v
+}
+
+func (m *DashboardsNodeGroupUpdateSpec) SetDiskSizeAutoscaling(v *DiskSizeAutoscaling) {
+	m.DiskSizeAutoscaling = v
 }
 
 func (m *AddDashboardsNodeGroupRequest) SetClusterId(v string) {

@@ -224,8 +224,16 @@ func (m *LifecycleRule) SetNoncurrentTransitions(v []*LifecycleRule_NoncurrentTr
 	m.NoncurrentTransitions = v
 }
 
+func (m *LifecycleRule) SetNoncurrentDeleteMarkers(v *LifecycleRule_NoncurrentDeleteMarkers) {
+	m.NoncurrentDeleteMarkers = v
+}
+
 func (m *LifecycleRule_AfterDays) SetDaysAfterExpiration(v *wrapperspb.Int64Value) {
 	m.DaysAfterExpiration = v
+}
+
+func (m *LifecycleRule_NoncurrentDeleteMarkers) SetNoncurrentDays(v *wrapperspb.Int64Value) {
+	m.NoncurrentDays = v
 }
 
 func (m *LifecycleRule_NoncurrentExpiration) SetNoncurrentDays(v *wrapperspb.Int64Value) {
@@ -274,6 +282,30 @@ func (m *LifecycleRule_RuleFilter) SetObjectSizeGreaterThan(v *wrapperspb.Int64V
 
 func (m *LifecycleRule_RuleFilter) SetObjectSizeLessThan(v *wrapperspb.Int64Value) {
 	m.ObjectSizeLessThan = v
+}
+
+func (m *LifecycleRule_RuleFilter) SetTag(v *Tag) {
+	m.Tag = v
+}
+
+func (m *LifecycleRule_RuleFilter) SetAndOperator(v *LifecycleRule_RuleFilter_And) {
+	m.AndOperator = v
+}
+
+func (m *LifecycleRule_RuleFilter_And) SetPrefix(v string) {
+	m.Prefix = v
+}
+
+func (m *LifecycleRule_RuleFilter_And) SetObjectSizeGreaterThan(v *wrapperspb.Int64Value) {
+	m.ObjectSizeGreaterThan = v
+}
+
+func (m *LifecycleRule_RuleFilter_And) SetObjectSizeLessThan(v *wrapperspb.Int64Value) {
+	m.ObjectSizeLessThan = v
+}
+
+func (m *LifecycleRule_RuleFilter_And) SetTag(v []*Tag) {
+	m.Tag = v
 }
 
 func (m *Counters) SetSimpleObjectSize(v int64) {

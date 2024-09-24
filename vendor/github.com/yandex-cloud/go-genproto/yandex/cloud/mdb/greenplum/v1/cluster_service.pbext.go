@@ -112,6 +112,18 @@ func (m *CreateClusterRequest) SetConfigSpec(v *ConfigSpec) {
 	m.ConfigSpec = v
 }
 
+func (m *CreateClusterRequest) SetCloudStorage(v *CloudStorage) {
+	m.CloudStorage = v
+}
+
+func (m *CreateClusterRequest) SetMasterHostGroupIds(v []string) {
+	m.MasterHostGroupIds = v
+}
+
+func (m *CreateClusterRequest) SetSegmentHostGroupIds(v []string) {
+	m.SegmentHostGroupIds = v
+}
+
 type ConfigSpec_GreenplumConfig = isConfigSpec_GreenplumConfig
 
 func (m *ConfigSpec) SetGreenplumConfig(v ConfigSpec_GreenplumConfig) {
@@ -142,8 +154,22 @@ func (m *ConfigSpec) SetGreenplumConfig_6_22(v *GreenplumConfig6_22) {
 	}
 }
 
+func (m *ConfigSpec) SetGreenplumConfig_6(v *GreenplumConfig6) {
+	m.GreenplumConfig = &ConfigSpec_GreenplumConfig_6{
+		GreenplumConfig_6: v,
+	}
+}
+
 func (m *ConfigSpec) SetPool(v *ConnectionPoolerConfig) {
 	m.Pool = v
+}
+
+func (m *ConfigSpec) SetBackgroundActivities(v *BackgroundActivitiesConfig) {
+	m.BackgroundActivities = v
+}
+
+func (m *ConfigSpec) SetPxfConfig(v *PXFConfig) {
+	m.PxfConfig = v
 }
 
 func (m *CreateClusterMetadata) SetClusterId(v string) {
@@ -186,6 +212,10 @@ func (m *UpdateClusterRequest) SetUserPassword(v string) {
 	m.UserPassword = v
 }
 
+func (m *UpdateClusterRequest) SetNetworkId(v string) {
+	m.NetworkId = v
+}
+
 func (m *UpdateClusterRequest) SetMaintenanceWindow(v *MaintenanceWindow) {
 	m.MaintenanceWindow = v
 }
@@ -200,6 +230,10 @@ func (m *UpdateClusterRequest) SetDeletionProtection(v bool) {
 
 func (m *UpdateClusterRequest) SetConfigSpec(v *ConfigSpec) {
 	m.ConfigSpec = v
+}
+
+func (m *UpdateClusterRequest) SetCloudStorage(v *CloudStorage) {
+	m.CloudStorage = v
 }
 
 func (m *UpdateClusterMetadata) SetClusterId(v string) {
@@ -226,6 +260,18 @@ func (m *ExpandRequest) SetDuration(v int64) {
 	m.Duration = v
 }
 
+func (m *ExpandRequest) SetParallel(v int64) {
+	m.Parallel = v
+}
+
+func (m *ExpandRequest) SetCloseCluster(v bool) {
+	m.CloseCluster = v
+}
+
+func (m *ExpandRequest) SetDelayRedistribution(v bool) {
+	m.DelayRedistribution = v
+}
+
 func (m *DeleteClusterRequest) SetClusterId(v string) {
 	m.ClusterId = v
 }
@@ -248,6 +294,26 @@ func (m *StopClusterRequest) SetClusterId(v string) {
 
 func (m *StopClusterMetadata) SetClusterId(v string) {
 	m.ClusterId = v
+}
+
+func (m *MoveClusterRequest) SetClusterId(v string) {
+	m.ClusterId = v
+}
+
+func (m *MoveClusterRequest) SetDestinationFolderId(v string) {
+	m.DestinationFolderId = v
+}
+
+func (m *MoveClusterMetadata) SetClusterId(v string) {
+	m.ClusterId = v
+}
+
+func (m *MoveClusterMetadata) SetSourceFolderId(v string) {
+	m.SourceFolderId = v
+}
+
+func (m *MoveClusterMetadata) SetDestinationFolderId(v string) {
+	m.DestinationFolderId = v
 }
 
 func (m *ListClusterOperationsRequest) SetClusterId(v string) {
@@ -406,6 +472,18 @@ func (m *ListClusterBackupsResponse) SetNextPageToken(v string) {
 	m.NextPageToken = v
 }
 
+func (m *BackupClusterRequest) SetClusterId(v string) {
+	m.ClusterId = v
+}
+
+func (m *BackupClusterMetadata) SetClusterId(v string) {
+	m.ClusterId = v
+}
+
+func (m *BackupClusterMetadata) SetBackupId(v string) {
+	m.BackupId = v
+}
+
 func (m *RestoreClusterRequest) SetBackupId(v string) {
 	m.BackupId = v
 }
@@ -476,6 +554,18 @@ func (m *RestoreClusterRequest) SetSegmentHostCount(v int64) {
 
 func (m *RestoreClusterRequest) SetSegmentInHost(v int64) {
 	m.SegmentInHost = v
+}
+
+func (m *RestoreClusterRequest) SetRestoreOnly(v []string) {
+	m.RestoreOnly = v
+}
+
+func (m *RestoreClusterRequest) SetMasterHostGroupIds(v []string) {
+	m.MasterHostGroupIds = v
+}
+
+func (m *RestoreClusterRequest) SetSegmentHostGroupIds(v []string) {
+	m.SegmentHostGroupIds = v
 }
 
 func (m *RestoreClusterMetadata) SetClusterId(v string) {

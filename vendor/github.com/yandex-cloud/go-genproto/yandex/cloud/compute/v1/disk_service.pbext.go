@@ -97,6 +97,10 @@ func (m *CreateDiskRequest) SetSnapshotScheduleIds(v []string) {
 	m.SnapshotScheduleIds = v
 }
 
+func (m *CreateDiskRequest) SetHardwareGeneration(v *HardwareGeneration) {
+	m.HardwareGeneration = v
+}
+
 func (m *CreateDiskMetadata) SetDiskId(v string) {
 	m.DiskId = v
 }
@@ -187,6 +191,10 @@ func (m *RelocateDiskRequest) SetDiskId(v string) {
 
 func (m *RelocateDiskRequest) SetDestinationZoneId(v string) {
 	m.DestinationZoneId = v
+}
+
+func (m *RelocateDiskRequest) SetDiskPlacementPolicy(v *DiskPlacementPolicy) {
+	m.DiskPlacementPolicy = v
 }
 
 func (m *RelocateDiskMetadata) SetDiskId(v string) {

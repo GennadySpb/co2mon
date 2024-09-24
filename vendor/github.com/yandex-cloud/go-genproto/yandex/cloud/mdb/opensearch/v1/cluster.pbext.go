@@ -3,6 +3,7 @@
 package opensearch
 
 import (
+	config "github.com/yandex-cloud/go-genproto/yandex/cloud/mdb/opensearch/v1/config"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -102,12 +103,28 @@ func (m *ClusterConfig) SetAccess(v *Access) {
 	m.Access = v
 }
 
+type OpenSearch_Config = isOpenSearch_Config
+
+func (m *OpenSearch) SetConfig(v OpenSearch_Config) {
+	m.Config = v
+}
+
 func (m *OpenSearch) SetPlugins(v []string) {
 	m.Plugins = v
 }
 
 func (m *OpenSearch) SetNodeGroups(v []*OpenSearch_NodeGroup) {
 	m.NodeGroups = v
+}
+
+func (m *OpenSearch) SetOpensearchConfigSet_2(v *config.OpenSearchConfigSet2) {
+	m.Config = &OpenSearch_OpensearchConfigSet_2{
+		OpensearchConfigSet_2: v,
+	}
+}
+
+func (m *OpenSearch) SetKeystoreSettings(v []string) {
+	m.KeystoreSettings = v
 }
 
 func (m *OpenSearch_NodeGroup) SetName(v string) {
@@ -138,6 +155,10 @@ func (m *OpenSearch_NodeGroup) SetRoles(v []OpenSearch_GroupRole) {
 	m.Roles = v
 }
 
+func (m *OpenSearch_NodeGroup) SetDiskSizeAutoscaling(v *DiskSizeAutoscaling) {
+	m.DiskSizeAutoscaling = v
+}
+
 func (m *Dashboards) SetNodeGroups(v []*Dashboards_NodeGroup) {
 	m.NodeGroups = v
 }
@@ -164,6 +185,10 @@ func (m *Dashboards_NodeGroup) SetSubnetIds(v []string) {
 
 func (m *Dashboards_NodeGroup) SetAssignPublicIp(v bool) {
 	m.AssignPublicIp = v
+}
+
+func (m *Dashboards_NodeGroup) SetDiskSizeAutoscaling(v *DiskSizeAutoscaling) {
+	m.DiskSizeAutoscaling = v
 }
 
 func (m *Resources) SetResourcePresetId(v string) {
@@ -272,4 +297,16 @@ func (m *Access) SetDataTransfer(v bool) {
 
 func (m *Access) SetServerless(v bool) {
 	m.Serverless = v
+}
+
+func (m *DiskSizeAutoscaling) SetPlannedUsageThreshold(v int64) {
+	m.PlannedUsageThreshold = v
+}
+
+func (m *DiskSizeAutoscaling) SetEmergencyUsageThreshold(v int64) {
+	m.EmergencyUsageThreshold = v
+}
+
+func (m *DiskSizeAutoscaling) SetDiskSizeLimit(v int64) {
+	m.DiskSizeLimit = v
 }
