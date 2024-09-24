@@ -9,12 +9,25 @@ report_sizes: true
 metadata:
   mod_timestamp: "{{ .CommitTimestamp }}"
 
-sboms:
-  - artifacts: archive
+#sboms:
+#  - artifacts: archive
+
+# common env
+env:
+  - CGO_ENABLED=1
+  - CC_darwin_arm64=oa64-clang
+  - CXX_darwin_arm64=oa64-clang++
+  - CC_linux_amd64=x86_64-linux-gnu-gcc
+  - CXX_linux_amd64=x86_64-linux-gnu-g++
+  - CC_linux_arm=arm-linux-gnueabihf-gcc
+  - CXX_linux_arm=arm-linux-gnueabihf-g++
+  - CC_linux_arm64=aarch64-linux-gnu-gcc
+  - CXX_linux_arm64=aarch64-linux-gnu-g++
 
 builds:
   - id: co2mon
     main: ./
+    binary: co2mon
     targets:
       - darwin_arm64
       - linux_arm64
@@ -22,24 +35,17 @@ builds:
       - linux_arm_5
 #      - linux_arm_6
 #      - linux_arm_7
-    env:
-      - CGO_ENABLED=1
-      - CC_darwin_arm64=oa64-clang
-      - CXX_darwin_arm64=oa64-clang++
-      - CC_linux_amd64=x86_64-linux-gnu-gcc
-      - CXX_linux_amd64=x86_64-linux-gnu-g++
-      - CC_linux_arm=arm-linux-gnueabihf-gcc
-      - CXX_linux_arm=arm-linux-gnueabihf-g++
-      - CC_linux_arm64=aarch64-linux-gnu-gcc
-      - CXX_linux_arm64=aarch64-linux-gnu-g++
-      - 'CC={{ index .Env (print "CC_" .Os "_" .Arch) }}'
-      - 'CXX={{ index .Env (print "CCX_" .Os "_" .Arch) }}'
     ldflags:
       - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser'
     mod_timestamp: "{{ .CommitTimestamp }}"
+    env:
+      - 'CC={{ index .Env (print "CC_" .Os "_" .Arch) }}'
+      - 'CXX={{ index .Env (print "CCX_" .Os "_" .Arch) }}'
+
 
   - id: ycpusher
     main: ./cmd/ycpusher
+    binary: ycpusher
     targets:
       - darwin_arm64
       - linux_arm64
@@ -47,21 +53,12 @@ builds:
       - linux_arm_5
 #      - linux_arm_6
 #      - linux_arm_7
-    env:
-      - CGO_ENABLED=1
-      - CC_darwin_arm64=oa64-clang
-      - CXX_darwin_arm64=oa64-clang++
-      - CC_linux_amd64=x86_64-linux-gnu-gcc
-      - CXX_linux_amd64=x86_64-linux-gnu-g++
-      - CC_linux_arm=arm-linux-gnueabihf-gcc
-      - CXX_linux_arm=arm-linux-gnueabihf-g++
-      - CC_linux_arm64=aarch64-linux-gnu-gcc
-      - CXX_linux_arm64=aarch64-linux-gnu-g++
-      - 'CC={{ index .Env (print "CC_" .Os "_" .Arch) }}'
-      - 'CXX={{ index .Env (print "CCX_" .Os "_" .Arch) }}'
     ldflags:
       - '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser'
     mod_timestamp: "{{ .CommitTimestamp }}"
+    env:
+      - 'CC={{ index .Env (print "CC_" .Os "_" .Arch) }}'
+      - 'CXX={{ index .Env (print "CCX_" .Os "_" .Arch) }}'
 
 checksum:
   name_template: 'checksums.txt'
